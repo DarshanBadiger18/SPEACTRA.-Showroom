@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Cycle-3D
 
 A 3D product showcase built with React, Three.js, and GSAP. A single GLB model is rendered persistently on screen while scroll drives the camera through a sequence of cinematic angles, revealing different views of the product across each section. Three bike variants can be switched via a carousel that animates the canvas out, swaps the model, and slides the new one back in.
@@ -171,3 +172,7 @@ npm run lint      # Run oxlint
 ## License
 
 MIT
+=======
+# SPEACTRA.-Showroom
+A 3D product showcase built with React, Three.js, and GSAP. A single GLB model is rendered persistently on screen while scroll drives the camera through a sequence of cinematic angles, revealing different views of the product across each section.
+>>>>>>> 6402642ef9687e04779ab0fe32b45696cbbcabc1
