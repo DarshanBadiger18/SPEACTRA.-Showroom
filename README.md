@@ -6,7 +6,7 @@ A 3D product showcase built with React, Three.js, and GSAP. A single GLB model i
 
 ## Live Demo
 
-[https://github.com/umesh-dev31/Cycle-3D](https://github.com/umesh-dev31/Cycle-3D)
+[https://github.com/DarshanBadiger18/SPEACTRA.-Showroom](https://github.com/DarshanBadiger18/SPEACTRA.-Showroom)
 
 ---
 
@@ -55,8 +55,8 @@ public/
 
 ```bash
 # Clone the repository
-git clone https://github.com/umesh-dev31/Cycle-3D.git
-cd Cycle-3D
+git clone https://github.com/DarshanBadiger18/SPEACTRA.-Showroom.git
+cd SPEACTRA.-Showroom
 
 # Install dependencies
 npm install
@@ -65,7 +65,7 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:5173` in your browser.
+Open `http://localhost:5174/` in your browser.
 
 ---
 
@@ -122,7 +122,7 @@ Switching between the three bikes is a pure DOM-level animation. GSAP slides the
 Add `?debug=true` to the URL to enable the camera debug panel. This replaces the scroll-driven camera with a set of sliders for position, target, and FOV. Scroll to a section, dial in the angle with the sliders, and copy the values into `CAMERA_KEYFRAMES` in `useScrollCamera.js`.
 
 ```
-http://localhost:5173/?debug=true
+http://localhost:5174/?debug=true
 ```
 
 ---

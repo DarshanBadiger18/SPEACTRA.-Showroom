@@ -91,7 +91,7 @@ const STATS = [
 // The 3D model itself is NOT rendered here — it's the same persistent
 // canvas from Scene.jsx (see App.jsx's HeroBackdrop for the rock pedestal
 // and glow, which must live behind that canvas, not in this component).
-export default function BikeCarouselSection({ bikes, activeIndex, onSelect }) {
+export default function BikeCarouselSection({ bikes, activeIndex, onSelect, onPreorder }) {
   const headlineRef = useRef(null);
   const active = bikes[activeIndex];
 
@@ -130,6 +130,8 @@ export default function BikeCarouselSection({ bikes, activeIndex, onSelect }) {
 
         <div className="flex items-center gap-3 sm:gap-4">
           <button
+            type="button"
+            onClick={onPreorder}
             className="rounded-full px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-semibold text-black flex items-center gap-2 transition-transform hover:scale-105"
             style={{ backgroundColor: active.color }}
           >

@@ -176,8 +176,160 @@ function DebugBadge() {
   );
 }
 
+function PreorderModal({ open, bike, onClose }) {
+  const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') onClose();
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [open, onClose]);
+
+  useEffect(() => {
+    if (open) setSubmitted(false);
+  }, [open, bike.name]);
+
+  if (!open) return null;
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const form = new FormData(event.currentTarget);
+    const preorder = {
+      bike: bike.name,
+      name: form.get('name'),
+      email: form.get('email'),
+      phone: form.get('phone'),
+      createdAt: new Date().toISOString(),
+    };
+
+    try {
+      const existing = JSON.parse(localStorage.getItem('speactra-preorders') || '[]');
+      localStorage.setItem('speactra-preorders', JSON.stringify([...existing, preorder]));
+    } catch {
+      // The confirmation is still shown if browser storage is unavailable.
+    }
+
+    setSubmitted(true);
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-[120] flex items-center justify-center px-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="preorder-title"
+    >
+      <button
+        type="button"
+        className="absolute inset-0 bg-black/75 backdrop-blur-sm"
+        onClick={onClose}
+        aria-label="Close preorder dialog"
+      />
+      <div className="relative w-full max-w-md rounded-3xl border border-white/10 bg-[#111114] p-5 sm:p-7 shadow-2xl">
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-4 top-4 w-9 h-9 rounded-full border border-white/15 text-white/70 hover:text-white hover:border-white/40"
+          aria-label="Close"
+        >
+          ×
+        </button>
+
+        {submitted ? (
+          <div className="py-8 text-center">
+            <div
+              className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full text-2xl text-black"
+              style={{ backgroundColor: bike.color }}
+            >
+              ✓
+            </div>
+            <h2 id="preorder-title" className="font-display text-2xl text-white">
+              Reservation received
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-gray-400">
+              Your interest in the {bike.name} has been recorded.
+            </p>
+            <button
+              type="button"
+              onClick={onClose}
+              className="mt-6 rounded-full px-6 py-3 text-sm font-semibold text-black"
+              style={{ backgroundColor: bike.color }}
+            >
+              Done
+            </button>
+          </div>
+        ) : (
+          <>
+            <p className="text-[10px] tracking-[0.25em] uppercase" style={{ color: bike.color }}>
+              Pre-order {bike.name}
+            </p>
+            <h2 id="preorder-title" className="mt-2 pr-10 font-display text-2xl text-white sm:text-3xl">
+              Reserve your ride
+            </h2>
+            <p className="mt-2 text-sm text-gray-400">
+              Enter your details and we will add you to the {bike.name} preorder list.
+            </p>
+
+            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+              <label className="block">
+                <span className="mb-1.5 block text-xs text-gray-400">Full name</span>
+                <input
+                  name="name"
+                  required
+                  autoFocus
+                  className="w-full rounded-xl border border-white/10 bg-white/[0.05] px-4 py-3 text-sm text-white outline-none focus:border-white/30"
+                  placeholder="Your name"
+                />
+              </label>
+              <label className="block">
+                <span className="mb-1.5 block text-xs text-gray-400">Email address</span>
+                <input
+                  name="email"
+                  type="email"
+                  required
+                  className="w-full rounded-xl border border-white/10 bg-white/[0.05] px-4 py-3 text-sm text-white outline-none focus:border-white/30"
+                  placeholder="you@example.com"
+                />
+              </label>
+              <label className="block">
+                <span className="mb-1.5 block text-xs text-gray-400">Phone number <span className="text-gray-600">(optional)</span></span>
+                <input
+                  name="phone"
+                  type="tel"
+                  className="w-full rounded-xl border border-white/10 bg-white/[0.05] px-4 py-3 text-sm text-white outline-none focus:border-white/30"
+                  placeholder="+1 555 000 0000"
+                />
+              </label>
+              <button
+                type="submit"
+                className="w-full rounded-full px-6 py-3 text-sm font-semibold text-black transition-transform hover:scale-[1.02]"
+                style={{ backgroundColor: bike.color }}
+              >
+                Confirm preorder
+              </button>
+            </form>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [activeBikeIndex, setActiveBikeIndex] = useState(0);
+  const [preorderOpen, setPreorderOpen] = useState(false);
   const sceneWrapperRef = useRef(null);
   const isSwitchingBike = useRef(false);
 
@@ -229,14 +381,27 @@ export default function App() {
         glow={BIKES[activeBikeIndex].glow}
       />
       <DebugBadge />
-      <Navbar accentColor={BIKES[activeBikeIndex].color} />
+      <Navbar
+        accentColor={BIKES[activeBikeIndex].color}
+        onPreorder={() => setPreorderOpen(true)}
+      />
       <LikeWidget />
+      <PreorderModal
+        open={preorderOpen}
+        bike={BIKES[activeBikeIndex]}
+        onClose={() => setPreorderOpen(false)}
+      />
 
       <div className="relative z-10">
       <div id="scroll-root">
         {/* 1. Hero — the bike carousel */}
         <Section id="hero">
-          <BikeCarouselSection bikes={BIKES} activeIndex={activeBikeIndex} onSelect={switchBike} />
+          <BikeCarouselSection
+            bikes={BIKES}
+            activeIndex={activeBikeIndex}
+            onSelect={switchBike}
+            onPreorder={() => setPreorderOpen(true)}
+          />
         </Section>
 
         {/* 2. Transition beat between the carousel and the rest of the scroll */}
@@ -547,6 +712,8 @@ export default function App() {
                 Ready to <span style={{ color: BIKES[activeBikeIndex].color }}>Ride</span>?
               </h3>
               <button
+                type="button"
+                onClick={() => setPreorderOpen(true)}
                 className="rounded-full px-6 sm:px-8 py-3 sm:py-3.5 text-xs sm:text-sm font-semibold text-black flex items-center gap-2 transition-transform hover:scale-105"
                 style={{ backgroundColor: BIKES[activeBikeIndex].color }}
               >

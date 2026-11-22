@@ -14,7 +14,7 @@ function MenuIcon({ open }) {
   );
 }
 
-export default function Navbar({ accentColor = '#22c55e' }) {
+export default function Navbar({ accentColor = '#22c55e', onPreorder }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -67,6 +67,8 @@ export default function Navbar({ accentColor = '#22c55e' }) {
 
       <div className="flex items-center gap-2 sm:gap-3">
         <button
+          type="button"
+          onClick={onPreorder}
           className="rounded-full border px-3 md:px-5 py-1.5 md:py-2 text-xs md:text-sm flex items-center gap-1.5 md:gap-2 transition-colors hover:bg-white/5 shrink-0"
           style={{ borderColor: `${accentColor}66`, color: accentColor }}
         >
